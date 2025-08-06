@@ -32,7 +32,6 @@ The dataset is sourced from Kaggle: [Loan Approval Prediction Dataset](https://w
 ├── functions.py            # Helper functions for model training
 ├── data/
 │   └── loan_approval_dataset.csv  # Dataset file
-├── __pycache__/           # Python cache files
 └── README.md              # Project documentation
 ```
 
