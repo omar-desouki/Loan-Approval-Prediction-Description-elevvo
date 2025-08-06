@@ -12,6 +12,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from sklearn.metrics import precision_score, recall_score, f1_score
+from sklearn.ensemble import RandomForestClassifier
 
 
 def train_logistic_regression(
@@ -74,6 +75,21 @@ def train_logistic_regression(
         )
         model.fit(X_train, y_train)
 
+    # print evaluation results for training -> # i am printing the evaluation of train to compare with the test and see if there is overfitting or not
+    print("\n" + "=" * 50)
+    print("LOGISTIC REGRESSION EVALUATION RESULTS (train set)")
+    print("=" * 50)
+    y_train_pred = model.predict(X_train)
+    train_accuracy = accuracy_score(y_train, y_train_pred)
+    train_precision = precision_score(y_train, y_train_pred)
+    train_recall = recall_score(y_train, y_train_pred)
+    train_f1 = f1_score(y_train, y_train_pred)
+    print(f"Training Accuracy:  {train_accuracy:.4f}")
+    print(f"Training Precision: {train_precision:.4f}")
+    print(f"Training Recall:    {train_recall:.4f}")
+    print(f"Training F1-Score:  {train_f1:.4f}")
+
+    # Print evaluation results for t
     # Make predictions
     y_pred = model.predict(X_test)
     y_pred_proba = model.predict_proba(X_test)[:, 1]
@@ -126,7 +142,6 @@ def train_random_forest(
     --------
     dict : Dictionary containing model, predictions, and evaluation metrics
     """
-    from sklearn.ensemble import RandomForestClassifier
 
     # Split the data
     X_train, X_test, y_train, y_test = train_test_split(
@@ -136,8 +151,8 @@ def train_random_forest(
     if grid_search:
         # Define parameter grid for grid search
         param_grid = {
-            "n_estimators": [50, 100, 200, 300],
-            "max_depth": [None, 5, 10, 15, 20],
+            "n_estimators": [100, 200, 300],
+            "max_depth": [None, 5, 10, 15],
             "min_samples_split": [2, 5, 10],
             "min_samples_leaf": [1, 2, 4],
             "max_features": ["sqrt", "log2", None],
@@ -166,6 +181,20 @@ def train_random_forest(
         )
         model.fit(X_train, y_train)
 
+    # Print evaluation results for training
+    print("\n" + "=" * 50)
+    print("RANDOM FOREST EVALUATION RESULTS (train set)")
+    print("=" * 50)
+    y_train_pred = model.predict(X_train)
+    train_accuracy = accuracy_score(y_train, y_train_pred)
+    train_precision = precision_score(y_train, y_train_pred)
+    train_recall = recall_score(y_train, y_train_pred)
+    train_f1 = f1_score(y_train, y_train_pred)
+    print(f"Training Accuracy:  {train_accuracy:.4f}")
+    print(f"Training Precision: {train_precision:.4f}")
+    print(f"Training Recall:    {train_recall:.4f}")
+    print(f"Training F1-Score:  {train_f1:.4f}")
+
     # Make predictions
     y_pred = model.predict(X_test)
     y_pred_proba = model.predict_proba(X_test)[:, 1]
@@ -175,10 +204,9 @@ def train_random_forest(
     precision = precision_score(y_test, y_pred)
     recall = recall_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred)
-
     # Print evaluation results
     print("\n" + "=" * 50)
-    print("RANDOM FOREST EVALUATION RESULTS")
+    print("RANDOM FOREST EVALUATION RESULTS (test set)")
     print("=" * 50)
     print(f"Accuracy:  {accuracy:.4f}")
     print(f"Precision: {precision:.4f}")
@@ -212,30 +240,4 @@ def train_random_forest(
         plt.tight_layout()
         plt.show()
 
-    # Return results dictionary
-    results = {
-        "model": model,
-        "X_train": X_train,
-        "X_test": X_test,
-        "y_train": y_train,
-        "y_test": y_test,
-        "y_pred": y_pred,
-        "y_pred_proba": y_pred_proba,
-        "accuracy": accuracy,
-        "precision": precision,
-        "recall": recall,
-        "f1_score": f1,
-        "classification_report": classification_report(
-            y_test, y_pred, output_dict=True
-        ),
-        "confusion_matrix": confusion_matrix(y_test, y_pred),
-    }
-
-    if grid_search:
-        results["best_params"] = grid_search_cv.best_params_
-        results["best_cv_score"] = grid_search_cv.best_score_
-
-    if hasattr(model, "feature_importances_"):
-        results["feature_importance"] = feature_importance
-
-    return results
+    return
